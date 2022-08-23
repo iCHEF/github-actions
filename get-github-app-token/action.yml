@@ -1,0 +1,23 @@
+name: Get Github App token
+description: Get access token for a Github App
+
+inputs:
+  app-id:
+    description: Github App ID, for generating JWT tokens.
+    required: true
+  private-key:
+    description: Github App Private Key, for signing JWT tokens.
+    required: true
+  installation-account:
+    description: >
+      The account login which installed given App.
+      Used for finding the correct installation to create access token.
+    required: true
+
+outputs:
+  token:
+    description: Access token, authenticated as specified Github App.
+
+runs:
+  using: node16
+  main: dist/index.js
