@@ -1,0 +1,21 @@
+{
+  "name": "@ichef/get-github-app-token",
+  "private": "true",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "prebuild": "rm -rf ./dist",
+    "build": "ncc build src/index.js --license LICENSES",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@actions/core": "^1.9.0",
+    "jsonwebtoken": "^8.5.1",
+    "node-fetch": "^2.x"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.34.0"
+  }
+}
