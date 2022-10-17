@@ -7,7 +7,7 @@ This action helps you to authenticate as a Github App, and obtain an access toke
 ```yaml
 steps:
   - id: get-token
-    uses: iCHEF/github-actions/get-app-token@main
+    uses: iCHEF/github-actions/get-github-app-token@main
     with:
       app-id: (Github App ID)
       private-key: (Private Key)
