@@ -1,0 +1,19 @@
+name: Install Lokalise CLI
+description: Install CLI from a version-locked install script
+inputs:
+  version:
+    description: version tag of "lokalise-cli-2-go" to install
+    required: true
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        LOKALISE_DIR="$RUNNER_TEMP/lokalise"
+        echo "LOKALISE_DIR=$LOKALISE_DIR" >> $GITHUB_ENV
+        echo "$LOKALISE_DIR" >> $GITHUB_PATH
+    - name: Install Lokalise
+      shell: bash
+      run: >
+        curl -sfL https://raw.githubusercontent.com/lokalise/lokalise-cli-2-go/${{ inputs.version }}/install.sh
+        | bash -s -- -b ${{ env.LOKALISE_DIR }} -d ${{ inputs.version }}
