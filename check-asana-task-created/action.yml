@@ -1,0 +1,15 @@
+name: Check Asana task created
+description: Check Asana task has been created and mentioned in PR description.
+
+inputs:
+  pr-description:
+    description: PR description
+    required: true
+
+outputs:
+  created:
+    description: Task created or not
+
+runs:
+  using: node16
+  main: dist/index.js
