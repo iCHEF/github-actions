@@ -9881,23 +9881,51 @@ function wrappy (fn, cb) {
 const fs = __nccwpck_require__(3292);
 const minimatch = __nccwpck_require__(2002);
 const path = __nccwpck_require__(1017);
+const core = __nccwpck_require__(2186);
 
 function getFilenamesInTestScope(fileGlob, filenames) {
   return filenames.filter(filename => minimatch(filename, fileGlob));
 }
 
-async function checkHasTestInTestFile(testFileFullname, allowTodo) {
+/**
+ * Get test file content for given full name of source file.
+ * We'll take related `__tests__` folder and try to open both `.test.js` & `.test.jsx` file,
+ * return file content if anyone exists.
+ * Throw error on both test files not found.
+ */
+async function getTestFileContent(sourceFileFullname) {
+  const testFileDir = `${path.dirname(sourceFileFullname)}/__tests__`;
+  const sourceFilenameWithoutExt = path.parse(sourceFileFullname).name;
+  const possibleTestFilename = [
+    `${sourceFilenameWithoutExt}.test.js`,
+    `${sourceFilenameWithoutExt}.test.jsx`,
+  ];
+  const possibleTestFileFullNames = possibleTestFilename.map(
+    testFileName => `${testFileDir}/${testFileName}`
+  );
+
+  for (testFileFullname of possibleTestFileFullNames) {
+    try {
+      const content = await fs.readFile(testFileFullname, { encoding: 'utf-8' });
+      return content;
+    } catch (error) {
+      core.debug(error);
+    }
+  }
+
+  throw new Error(`Test file not exists for ${sourceFileFullname}`);
+}
+
+async function checkHasTestInRelatedTestFile(sourceFileFullname, allowTodo) {
+  let testFileContent;
   try {
-    testFileContent = (await fs.readFile(testFileFullname, { encoding: 'utf-8' }));
+    testFileContent = await getTestFileContent(sourceFileFullname);
   } catch (error) {
-    console.log(error);
-    console.log('Test file not exists for', testFileFullname);
+    core.debug(error);
     return false;
   }
 
-  if (env.RUNNER_DEBUG) {
-    console.log('test file content', testFileContent)
-  }
+  core.debug('test file content', testFileContent)
 
   /**
    * TODO: reimplement this by checking AST
@@ -9907,13 +9935,13 @@ async function checkHasTestInTestFile(testFileFullname, allowTodo) {
     'it.each(',
     'test(',
     'test.each(',
-  ].some(value => fileContent.includes(value));
+  ].some(value => testFileContent.includes(value));
 
   if (!allowTodo) {
     return hasTest;
   }
 
-  const hasTodo = ['it.todo(', 'test.todo('].some(value => fileContent.includes(value))
+  const hasTodo = ['it.todo(', 'test.todo('].some(value => testFileContent.includes(value))
 
   return hasTest || hasTodo;
 }
@@ -9924,25 +9952,19 @@ async function hasSkipCommentInSourceFile(sourceFileFullname) {
 }
 
 async function hasTestForSourceFile(sourceFilename, allowTodo) {
-  console.log(`checking if ${sourceFilename} has related test file...`);
+  core.debug(`checking if ${sourceFilename} has related test file...`);
   if (!sourceFilename.includes('.js') || sourceFilename.includes('.test.js')) {
     return true;
   }
 
-  const env = process.env;
-  const sourceFileDir = `${env.GITHUB_WORKSPACE}/${path.dirname(sourceFilename)}`;
-  const testDir = `${sourceFileDir}/__tests__`;
-  const sourceFilenameWithoutExt = path.parse(sourceFilename).name;
-  const testFileFullname = `${testDir}/${sourceFilenameWithoutExt}.test.js`;
-  console.log('Full test filename : ', testFileFullname);
+  const sourceFileFullname = `${process.env.GITHUB_WORKSPACE}/${sourceFilename}`;
 
-  if (await checkHasTestInTestFile(testFileFullname, allowTodo)) {
+  if (await checkHasTestInRelatedTestFile(sourceFileFullname, allowTodo)) {
     return true;
   }
 
-  const sourceFileFullname = `${env.GITHUB_WORKSPACE}/${sourceFilename}`;
-  if (hasSkipCommentInSourceFile(sourceFileFullname)) {
-    console.log(`${sourceFilename} contains skip test comment, regard it as tested.`);
+  if (await hasSkipCommentInSourceFile(sourceFileFullname)) {
+    core.debug(`${sourceFilename} contains skip test comment, regard it as tested.`);
     return true;
   }
 
@@ -9953,7 +9975,7 @@ async function findUntestedFiles({ filePaths, testScopes, allowTodo }) {
   const results = await Promise.all(testScopes.map(
     async testScope => {
       const filenamesInTestScope = getFilenamesInTestScope(testScope, filePaths);
-      console.log('matching testScope:', testScope, 'matched files:\n' , filenamesInTestScope.join('\n'));
+      core.debug('matching testScope:', testScope, 'matched files:\n' , filenamesInTestScope.join('\n'));
       return (await Promise.all(
         filenamesInTestScope.map(async (filename) => {
           const hasTest = await hasTestForSourceFile(filename, allowTodo)
@@ -11152,7 +11174,7 @@ const octokit = (function getOctokit() {
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function listChangedFiles() {
-  console.log('Fetching changed file names...')
+  core.debug('Fetching changed file names...')
   const pullNumber = github.context.payload.pull_request.number;
   const owner = github.context.repo.owner;
   const repo = github.context.repo.repo;
@@ -11193,10 +11215,9 @@ async function listChangedFiles() {
     );
 
     const filesResponseData = repository.pullRequest.files;
-    if (process.env.RUNNER_DEBUG) {
-      console.log('get response data: ', repository)
-      console.log('with params:', params);
-    }
+
+    core.debug('get response data: ', repository)
+    core.debug('with params:', params);
     const filePaths = filesResponseData.nodes.map(({ path }) => path);
     result = result.concat(filePaths);
     const { pageInfo } = filesResponseData;

@@ -10,7 +10,7 @@ const octokit = (function getOctokit() {
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function listChangedFiles() {
-  console.log('Fetching changed file names...')
+  core.debug('Fetching changed file names...')
   const pullNumber = github.context.payload.pull_request.number;
   const owner = github.context.repo.owner;
   const repo = github.context.repo.repo;
@@ -51,10 +51,9 @@ async function listChangedFiles() {
     );
 
     const filesResponseData = repository.pullRequest.files;
-    if (process.env.RUNNER_DEBUG) {
-      console.log('get response data: ', repository)
-      console.log('with params:', params);
-    }
+
+    core.debug('get response data: ', repository)
+    core.debug('with params:', params);
     const filePaths = filesResponseData.nodes.map(({ path }) => path);
     result = result.concat(filePaths);
     const { pageInfo } = filesResponseData;
