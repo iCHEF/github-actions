@@ -1,0 +1,14 @@
+name: 'Check Test Files'
+description: 'Check all changed files has test'
+inputs:
+  testScopes:
+    description: 'scopes of test files, written with glob'
+    required: true
+  token:
+    description: 'Github App Token'
+    required: true
+  allowTodo:
+    description: 'Considering has test if there is `it.todo()` in test file.'
+runs:
+  using: node16
+  main: dist/index.js
