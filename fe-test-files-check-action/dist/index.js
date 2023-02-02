@@ -11181,7 +11181,13 @@ async function listChangedFiles() {
   let result = [];
   let hasNextPage = true;
   let cursor;
-  const perPage = 100;
+  /**
+   * For rate limit, we can't fetch too many records at a time.
+   *
+   * Detail see:
+   * https://docs.github.com/en/graphql/overview/resource-limitations#node-limit
+   */
+  const perPage = 20;
 
   while(hasNextPage) {
     const params = {
@@ -11235,6 +11241,13 @@ async function listChangedFiles() {
   return result;
 }
 
+/**
+ * The entrypoint for checking changed files in PR has test.
+ *
+ * Generally there are two steps:
+ * - Fetch changed file names in PR through github api.
+ * - Check if these files has corresponding tests, if one of them has no test this action would fail.
+ */
 async function checkAllChangedFilesHasTest() {
   const testScopes = core.getInput('testScopes').split(',').map(s => s.trim());
   console.log('testScopes', testScopes)

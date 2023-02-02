@@ -2,13 +2,15 @@ name: 'Check Test Files'
 description: 'Check all changed files has test'
 inputs:
   testScopes:
-    description: 'scopes of test files, written with glob'
+    # Ideally should be an array, but github action does not allow passing array as input.
+    description: 'a comma separated string containing file globs, for matching source files which should has test.'
     required: true
   token:
-    description: 'Github App Token'
+    description: 'Github Token for accessing github api.'
     required: true
   allowTodo:
-    description: 'Considering has test if there is `it.todo()` in test file.'
+    description: 'When allowTodo=true, regard the source file as tested if there is `it.todo()` in test file.'
+    default: false
 runs:
   using: node16
   main: dist/index.js
