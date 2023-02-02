@@ -73,7 +73,10 @@ async function hasSkipCommentInSourceFile(sourceFileFullname) {
 
 async function hasTestForSourceFile(sourceFilename, allowTodo) {
   core.debug(`checking if ${sourceFilename} has related test file...`);
-  if (!sourceFilename.includes('.js') || sourceFilename.includes('.test.js')) {
+  if (
+    (['.js', '.ts'].every(ext => !sourceFilename.includes(ext)))
+    || sourceFilename.includes('.test.js')
+  ) {
     return true;
   }
 
