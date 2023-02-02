@@ -10,13 +10,7 @@ In repo github workflow:
 steps:
   # checkout project repo
   - uses: actions/checkout@v3
-  # checkout this action
-  - uses: actions/checkout@v3
-    with:
-      repository: iCHEF/github-actions
-      path: ./.github/github-actions
-  - name: Check untested files
-    uses: ./.github/github-actions/fe-test-files-check-action
+  - uses: iCHEF/github-actions/fe-test-files-check-action@main
     with:
       token: ${{ secrets.GITHUB_TOKEN }}
       # list files should have corresponding tests with glob
