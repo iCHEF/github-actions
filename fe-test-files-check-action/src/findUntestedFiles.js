@@ -52,9 +52,9 @@ async function checkHasTestInRelatedTestFile(sourceFileFullname, allowTodo) {
    */
   const hasTest = [
     'it(',
-    'it.each(',
+    'it.each',
     'test(',
-    'test.each(',
+    'test.each',
   ].some(value => testFileContent.includes(value));
 
   if (!allowTodo) {
