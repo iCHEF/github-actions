@@ -9932,9 +9932,9 @@ async function checkHasTestInRelatedTestFile(sourceFileFullname, allowTodo) {
    */
   const hasTest = [
     'it(',
-    'it.each(',
+    'it.each',
     'test(',
-    'test.each(',
+    'test.each',
   ].some(value => testFileContent.includes(value));
 
   if (!allowTodo) {
@@ -9955,7 +9955,10 @@ async function hasTestForSourceFile(sourceFilename, allowTodo) {
   core.debug(`checking if ${sourceFilename} has related test file...`);
   if (
     (['.js', '.ts'].every(ext => !sourceFilename.includes(ext)))
-    || sourceFilename.includes('.test.js')
+    || [
+      '.test.js',
+      'index.js',
+    ].some(value => sourceFilename.includes(value))
   ) {
     return true;
   }
