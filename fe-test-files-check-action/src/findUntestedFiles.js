@@ -55,6 +55,8 @@ async function checkHasTestInRelatedTestFile(sourceFileFullname, allowTodo) {
     'it.each',
     'test(',
     'test.each',
+    // Temporary fix for skipping hook call assertion utils in fe-test-utils.
+    'expectToBe',
   ].some(value => testFileContent.includes(value));
 
   if (!allowTodo) {
