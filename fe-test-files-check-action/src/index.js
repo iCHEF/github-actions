@@ -9,6 +9,16 @@ const octokit = (function getOctokit() {
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+// See https://docs.github.com/en/graphql/reference/enums#patchstatus
+const PATCH_STATUS = {
+  ADDED: 'ADDED',
+  CHANGED: 'CHANGED',
+  COPIED: 'COPIED',
+  DELETED: 'DELETED',
+  MODIFIED: 'MODIFIED',
+  RENAMED: 'RENAMED',
+};
+
 async function listChangedFiles() {
   core.debug('Fetching changed file names...')
   const pullNumber = github.context.payload.pull_request.number;
@@ -44,6 +54,7 @@ async function listChangedFiles() {
             files(first: $first, after: $cursor) {
               nodes {
                 path
+                changeType
               }
               pageInfo {
                 endCursor
@@ -60,7 +71,12 @@ async function listChangedFiles() {
 
     core.debug('get response data: ', repository)
     core.debug('with params:', params);
-    const filePaths = filesResponseData.nodes.map(({ path }) => path);
+    /**
+     * Deleted / Renamed files don't count.
+     */
+    const filePaths = filesResponseData.nodes
+      .filter(({ changeType }) => ![PATCH_STATUS.DELETED, PATCH_STATUS.RENAMED].includes(changeType) )
+      .map(({ path }) => path);
     result = result.concat(filePaths);
     const { pageInfo } = filesResponseData;
     cursor = pageInfo.endCursor;
