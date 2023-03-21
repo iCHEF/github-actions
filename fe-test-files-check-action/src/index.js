@@ -72,10 +72,10 @@ async function listChangedFiles() {
     core.debug('get response data: ', repository)
     core.debug('with params:', params);
     /**
-     * Deleted / Renamed files don't count.
+     * Deleted files don't count.
      */
     const filePaths = filesResponseData.nodes
-      .filter(({ changeType }) => ![PATCH_STATUS.DELETED, PATCH_STATUS.RENAMED].includes(changeType) )
+      .filter(({ changeType }) => ![PATCH_STATUS.DELETED].includes(changeType))
       .map(({ path }) => path);
     result = result.concat(filePaths);
     const { pageInfo } = filesResponseData;
