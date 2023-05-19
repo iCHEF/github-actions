@@ -9883,6 +9883,13 @@ const minimatch = __nccwpck_require__(2002);
 const path = __nccwpck_require__(1017);
 const core = __nccwpck_require__(2186);
 
+const NON_TEST_JS_FILE_NAME_SEGMENTS = [
+  '.test.js',
+  'index.js',
+  '.tape.js',
+  'fixture',
+];
+
 function getFilenamesInTestScope(fileGlob, filenames) {
   return filenames.filter(filename => minimatch(filename, fileGlob));
 }
@@ -9957,10 +9964,7 @@ async function hasTestForSourceFile(sourceFilename, allowTodo) {
   core.debug(`checking if ${sourceFilename} has related test file...`);
   if (
     (['.js', '.ts'].every(ext => !sourceFilename.includes(ext)))
-    || [
-      '.test.js',
-      'index.js',
-    ].some(value => sourceFilename.includes(value))
+    || NON_TEST_JS_FILE_NAME_SEGMENTS.some(value => sourceFilename.includes(value))
   ) {
     return true;
   }
@@ -11247,7 +11251,7 @@ async function listChangedFiles() {
      * Deleted files don't count.
      */
     const filePaths = filesResponseData.nodes
-      .filter(({ changeType }) => ![PATCH_STATUS.DELETED].includes(changeType) )
+      .filter(({ changeType }) => ![PATCH_STATUS.DELETED].includes(changeType))
       .map(({ path }) => path);
     result = result.concat(filePaths);
     const { pageInfo } = filesResponseData;
