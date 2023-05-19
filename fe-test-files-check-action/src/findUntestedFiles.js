@@ -3,10 +3,11 @@ const minimatch = require('minimatch');
 const path = require('path');
 const core = require('@actions/core');
 
-const NON_TEST_JS_FILES_POSTFIX = [
+const NON_TEST_JS_FILE_NAME_SEGMENTS = [
   '.test.js',
   'index.js',
   '.tape.js',
+  'fixture',
 ];
 
 function getFilenamesInTestScope(fileGlob, filenames) {
@@ -83,7 +84,7 @@ async function hasTestForSourceFile(sourceFilename, allowTodo) {
   core.debug(`checking if ${sourceFilename} has related test file...`);
   if (
     (['.js', '.ts'].every(ext => !sourceFilename.includes(ext)))
-    || NON_TEST_JS_FILES_POSTFIX.some(value => sourceFilename.includes(value))
+    || NON_TEST_JS_FILE_NAME_SEGMENTS.some(value => sourceFilename.includes(value))
   ) {
     return true;
   }
