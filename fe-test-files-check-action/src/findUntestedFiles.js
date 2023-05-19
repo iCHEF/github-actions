@@ -3,6 +3,27 @@ const minimatch = require('minimatch');
 const path = require('path');
 const core = require('@actions/core');
 
+const FILE_NAME_KEYWORDS_NOT_REQUIRING_TESTS = [
+  '.test.js',
+  'index.js',
+  '.tape.js',
+  'fixture',
+];
+
+const TEST_CASE_KEYWORDS = [
+  'it(',
+  'it.each',
+  'test(',
+  'test.each',
+  // Temporary fix for skipping hook call assertion utils in fe-test-utils.
+  'expectToBe',
+]
+
+const TODO_TEST_CASE_KEYWORDS = [
+  'it.todo(',
+  'test.todo(',
+];
+
 function getFilenamesInTestScope(fileGlob, filenames) {
   return filenames.filter(filename => minimatch(filename, fileGlob));
 }
@@ -50,20 +71,13 @@ async function checkHasTestInRelatedTestFile(sourceFileFullname, allowTodo) {
   /**
    * TODO: reimplement this by checking AST
    */
-  const hasTest = [
-    'it(',
-    'it.each',
-    'test(',
-    'test.each',
-    // Temporary fix for skipping hook call assertion utils in fe-test-utils.
-    'expectToBe',
-  ].some(value => testFileContent.includes(value));
+  const hasTest = TEST_CASE_KEYWORDS.some(value => testFileContent.includes(value));
 
   if (!allowTodo) {
     return hasTest;
   }
 
-  const hasTodo = ['it.todo(', 'test.todo('].some(value => testFileContent.includes(value))
+  const hasTodo = TODO_TEST_CASE_KEYWORDS.some(value => testFileContent.includes(value))
 
   return hasTest || hasTodo;
 }
@@ -77,10 +91,7 @@ async function hasTestForSourceFile(sourceFilename, allowTodo) {
   core.debug(`checking if ${sourceFilename} has related test file...`);
   if (
     (['.js', '.ts'].every(ext => !sourceFilename.includes(ext)))
-    || [
-      '.test.js',
-      'index.js',
-    ].some(value => sourceFilename.includes(value))
+    || FILE_NAME_KEYWORDS_NOT_REQUIRING_TESTS.some(value => sourceFilename.includes(value))
   ) {
     return true;
   }
