@@ -7,6 +7,7 @@ const FILE_NAME_KEYWORDS_NOT_REQUIRING_TESTS = [
   '.test.js',
   'index.js',
   '.tape.js',
+  '.d.ts',
   'fixture',
   'constant',
 ];
