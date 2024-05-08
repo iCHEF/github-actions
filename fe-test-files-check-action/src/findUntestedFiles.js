@@ -7,9 +7,11 @@ const FILE_NAME_KEYWORDS_NOT_REQUIRING_TESTS = [
   '.test.js',
   '.tape.js',
   '.d.ts',
+  'types.ts',
   'fixture',
   'index',
   'constant',
+  '/types/',
 ];
 
 const TEST_CASE_KEYWORDS = [
