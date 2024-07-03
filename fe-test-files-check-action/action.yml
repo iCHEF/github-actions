@@ -12,5 +12,5 @@ inputs:
     description: 'When allowTodo=true, regard the source file as tested if there is `it.todo()` in test file.'
     default: false
 runs:
-  using: node16
+  using: node20
   main: dist/index.js
