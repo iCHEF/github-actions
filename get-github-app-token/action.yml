@@ -19,5 +19,5 @@ outputs:
     description: Access token, authenticated as specified Github App.
 
 runs:
-  using: node16
+  using: node20
   main: dist/index.js
