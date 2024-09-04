@@ -12,6 +12,7 @@ const FILE_NAME_KEYWORDS_NOT_REQUIRING_TESTS = [
   'index',
   'constant',
   '/types/',
+  'test.ts',
 ];
 
 const TEST_CASE_KEYWORDS = [
