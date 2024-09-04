@@ -45,6 +45,8 @@ async function getTestFileContent(sourceFileFullname) {
   const possibleTestFilename = [
     `${sourceFilenameWithoutExt}.test.js`,
     `${sourceFilenameWithoutExt}.test.jsx`,
+    `${sourceFilenameWithoutExt}.test.ts`,
+    `${sourceFilenameWithoutExt}.test.tsx`,
   ];
   const possibleTestFileFullNames = possibleTestFilename.map(
     testFileName => `${testFileDir}/${testFileName}`
