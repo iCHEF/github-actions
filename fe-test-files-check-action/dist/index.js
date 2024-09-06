@@ -9892,6 +9892,7 @@ const FILE_NAME_KEYWORDS_NOT_REQUIRING_TESTS = [
   'index',
   'constant',
   '/types/',
+  'test.ts',
 ];
 
 const TEST_CASE_KEYWORDS = [
@@ -9924,6 +9925,8 @@ async function getTestFileContent(sourceFileFullname) {
   const possibleTestFilename = [
     `${sourceFilenameWithoutExt}.test.js`,
     `${sourceFilenameWithoutExt}.test.jsx`,
+    `${sourceFilenameWithoutExt}.test.ts`,
+    `${sourceFilenameWithoutExt}.test.tsx`,
   ];
   const possibleTestFileFullNames = possibleTestFilename.map(
     testFileName => `${testFileDir}/${testFileName}`
