@@ -13,6 +13,7 @@ const FILE_NAME_KEYWORDS_NOT_REQUIRING_TESTS = [
   'constant',
   '/types/',
   'test.ts',
+  '/schemas/',
 ];
 
 const TEST_CASE_KEYWORDS = [
