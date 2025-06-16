@@ -1,0 +1,41 @@
+name: "SonarQube Pull Request Comment"
+description: "Checks SonarQube Quality Gate status and comments on a pull request."
+branding:
+  icon: 'git-pull-request'
+  color: 'green'
+inputs:
+  sonar_host_url:
+    description: "SonarQube URL"
+    required: true
+  sonar_token:
+    description: "SonarQube authentication token"
+    required: true
+  sonar_projectkey:
+    description: "SonarQube project key"
+    required: true
+  github-token:
+    description: "GitHub token"
+    required: true
+  repo_name:
+    description: "Repository name"
+    required: true
+  pr_number:
+    description: "Pull Request number"
+    required: true
+  github_api_base_url:
+    description: "Base URL for GitHub API"
+    required: true
+outputs:
+  quality_check:
+    description: "Quality check status from SonarQube"
+runs:
+  using: "docker"
+  image: "Dockerfile"
+  env:
+    SONAR_HOST_URL: ${{ inputs.sonar_host_url }}
+    SONAR_TOKEN: ${{ inputs.sonar_token }}
+    SONAR_PROJECTKEY: ${{ inputs.sonar_projectkey }}
+    GITHUB_TOKEN: ${{ inputs.github-token }}
+    REPO_NAME: ${{ inputs.repo_name }}
+    PR_NUMBER: ${{ inputs.pr_number }}
+    GITHUB_API_BASE_URL: ${{ inputs.github_api_base_url }}
