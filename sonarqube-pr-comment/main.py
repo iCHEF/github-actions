@@ -2,6 +2,8 @@ import os
 import requests
 from github import Github
 
+BOT_COMMENT_MARKER = "<!-- SonarQube Quality Gate Comment -->"
+
 # Configuration of environment variables
 SONAR_HOST_URL = os.getenv('SONAR_HOST_URL')
 SONAR_PROJECTKEY = os.getenv('SONAR_PROJECTKEY')
@@ -53,7 +55,7 @@ def code_validation():
     else:
         result = "quality_check=ERROR CONFIGURATION"
 
-    return result
+    return f"{BOT_COMMENT_MARKER}\n{result}"
 
 def comment_on_pull_request(body, base_url=None):
     # Authenticate with GitHub
@@ -65,9 +67,24 @@ def comment_on_pull_request(body, base_url=None):
     repo = g.get_repo(REPO_NAME)
     pull_request = repo.get_pull(int(PR_NUMBER))
 
-    print(f"Commenting on Pull Request #{PR_NUMBER}.")
-    # Comment on the Pull Request
-    pull_request.create_issue_comment(body)
+    print("Searching for existing bot comment...")
+    # Search for an existing comment from our bot
+    existing_comment_to_update = None
+    comments = pull_request.get_issue_comments()
+    for comment in comments:
+        if BOT_COMMENT_MARKER in comment.body:
+            existing_comment_to_update = comment
+            # print(f"Found existing comment from bot (ID: {comment.id})") # This was the old line
+            break
+
+    if existing_comment_to_update:
+        print(f"Found existing comment ID: {existing_comment_to_update.id}. Editing it.")
+        existing_comment_to_update.edit(body)
+        print("Comment edited successfully.")
+    else:
+        print("No existing bot comment found. Creating a new one.")
+        pull_request.create_issue_comment(body)
+        print("New comment created successfully.")
 
 if __name__ == "__main__":
     # Execute code validation
