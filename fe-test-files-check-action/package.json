@@ -4,7 +4,7 @@
   "description": "Check if every changed file has corresponding test.",
   "main": "index.js",
   "scripts": {
-    "build": "esbuild src/index.js --bundle --platform=node --target=node20 --format=cjs --outfile=dist/index.js --legal-comments=linked",
+    "build": "esbuild src/index.js --bundle --platform=node --target=node24 --format=cjs --outfile=dist/index.js --legal-comments=linked",
     "clean:build": "rm -rf ./dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
