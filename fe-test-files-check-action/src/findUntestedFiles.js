@@ -1,7 +1,7 @@
-const fs = require('fs/promises');
-const minimatch = require('minimatch');
-const path = require('path');
-const core = require('@actions/core');
+import fs from 'node:fs/promises';
+import { minimatch } from 'minimatch';
+import path from 'node:path';
+import * as core from '@actions/core';
 
 const FILE_NAME_KEYWORDS_NOT_REQUIRING_TESTS = [
   '.test.js',
@@ -53,7 +53,7 @@ async function getTestFileContent(sourceFileFullname) {
     testFileName => `${testFileDir}/${testFileName}`
   );
 
-  for (testFileFullname of possibleTestFileFullNames) {
+  for (const testFileFullname of possibleTestFileFullNames) {
     try {
       const content = await fs.readFile(testFileFullname, { encoding: 'utf-8' });
       return content;
@@ -138,4 +138,4 @@ async function findUntestedFiles({ filePaths, testScopes, allowTodo }) {
   );
 }
 
-module.exports = findUntestedFiles;
+export default findUntestedFiles;
