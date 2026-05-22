@@ -6,16 +6,15 @@
   "main": "dist/index.js",
   "scripts": {
     "prebuild": "rm -rf ./dist",
-    "build": "ncc build src/index.js --license LICENSES",
+    "build": "esbuild src/index.js --bundle --platform=node --target=node24 --format=cjs --outfile=dist/index.js --legal-comments=linked",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "license": "UNLICENSED",
   "dependencies": {
-    "@actions/core": "^1.10.0",
-    "jsonwebtoken": "^8.5.1",
-    "node-fetch": "^2.x"
+    "@actions/core": "^3.0.1",
+    "jsonwebtoken": "^9.0.3"
   },
   "devDependencies": {
-    "@vercel/ncc": "^0.34.0"
+    "esbuild": "^0.28.0"
   }
 }
