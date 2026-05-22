@@ -2,7 +2,6 @@
   "name": "fe-test-files-check-action",
   "version": "1.0.0",
   "description": "Check if every changed file has corresponding test.",
-  "type": "module",
   "main": "index.js",
   "scripts": {
     "build": "esbuild src/index.js --bundle --platform=node --target=node20 --format=cjs --outfile=dist/index.js --legal-comments=linked",

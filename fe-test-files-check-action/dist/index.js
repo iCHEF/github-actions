@@ -23729,7 +23729,7 @@ function getOctokit(token, options, ...additionalPlugins) {
 }
 
 // src/findUntestedFiles.js
-var import_promises = __toESM(require("node:fs/promises"), 1);
+var import_promises = __toESM(require("node:fs/promises"));
 
 // node_modules/balanced-match/dist/esm/index.js
 var balanced = (a, b, str) => {
@@ -25534,7 +25534,7 @@ minimatch.escape = escape;
 minimatch.unescape = unescape;
 
 // src/findUntestedFiles.js
-var import_node_path = __toESM(require("node:path"), 1);
+var import_node_path = __toESM(require("node:path"));
 var FILE_NAME_KEYWORDS_NOT_REQUIRING_TESTS = [
   ".test.js",
   ".tape.js",
