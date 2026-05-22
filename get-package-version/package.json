@@ -1,8 +1,8 @@
 {
-  "name": "@ichef/get-github-app-token",
+  "name": "@ichef/get-package-version",
   "private": "true",
   "version": "1.0.0",
-  "description": "",
+  "description": "Read version field from package.json",
   "main": "dist/index.js",
   "scripts": {
     "prebuild": "rm -rf ./dist",
@@ -11,8 +11,7 @@
   },
   "license": "UNLICENSED",
   "dependencies": {
-    "@actions/core": "^3.0.1",
-    "jsonwebtoken": "^9.0.3"
+    "@actions/core": "^3.0.1"
   },
   "devDependencies": {
     "esbuild": "^0.28.0"

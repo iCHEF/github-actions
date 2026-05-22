@@ -1,7 +1,5 @@
-const core = require('@actions/core');
-/** @type {import('node-fetch').default} */
-const fetch = require('node-fetch');
-const jwt = require('jsonwebtoken');
+import * as core from '@actions/core';
+import jwt from 'jsonwebtoken';
 
 const getJwtToken = ({ appId, privateKey }) => {
   const timestamp = Math.floor((new Date()).getTime() / 1000);
